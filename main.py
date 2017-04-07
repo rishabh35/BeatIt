@@ -12,22 +12,22 @@ import sys
 def nothing(x):
     pass
 ar = []
-do1, fs1 = sf.read('sounds/cymbal7.aif')
-do2, fs2 = sf.read('sounds/kick2.aif')
-do3, fs3 = sf.read('sounds/tom4.aif')
-do4, fs4 = sf.read('sounds/snare2.aif')
+do1, fs1 = sf.read('sounds/brush.wav')
+do2, fs2 = sf.read('sounds/hh.wav')
+do3, fs3 = sf.read('sounds/drum.wav')
+do4, fs4 = sf.read('sounds/snare.wav')
 fs = 65535
 duration = 10.5  # seconds
 myrecording = []
-cflag=0
+# cflag=0
 p = 1
-cnts = []
-cnts2 = []
-pts = deque(maxlen=10)
-pts2 = deque(maxlen=10)
+# cnts = []
+# cnts2 = []
+# pts = deque(maxlen=10)
+# pts2 = deque(maxlen=10)
 
 
-center = None
+# center = None
 loopcheck1 = 0
 loopcheck2 = 0
 camera = cv2.VideoCapture(0)
@@ -112,7 +112,7 @@ def mainloop():
 		p = 0
 
 		thrc.start()
-		# thrc2.start()
+		thrc2.start()
 
 		cv2.namedWindow('Frame')
 		while True:
@@ -254,89 +254,89 @@ def loop1():
 		cv2.imshow("Frame", frame)
 
 
-# def loop2():
-# 	h2, s2, v2 = 100, 100, 100
-# 	gLower2 = (h2-10,s2,v2)
-# 	gUpper2 = (h2+10, 255, 255)
-# 	f = 0
-# 	while(True):
-# 		sad = 0
-# 		(grabbed, frame) = camera.read()
-# 		frame = cv2.flip(frame,1)
+def loop2():
+	h2, s2, v2 = 200, 100, 100
+	gLower2 = (h2-10,s2,v2)
+	gUpper2 = (h2+10, 255, 255)
+	f = 0
+	while(True):
+		sad = 0
+		(grabbed, frame) = camera.read()
+		frame = cv2.flip(frame,1)
 
-# 		# if args.get("video") and not grabbed:
-# 		# 	break
-# 		frame = imutils.resize(frame, width=1200)
-# 		hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
+		# if args.get("video") and not grabbed:
+		# 	break
+		frame = imutils.resize(frame, width=1200)
+		hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
 
-# 		mask2 = cv2.inRange(hsv, gLower2, gUpper2)
-# 		mask2 = cv2.erode(mask2, None, iterations=2)
-# 		mask2 = cv2.dilate(mask2, None, iterations=2)
-
-
-# 		cnts2 = cv2.findContours(mask2.copy(), cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)[-2]
-# 		center = None
+		mask2 = cv2.inRange(hsv, gLower2, gUpper2)
+		mask2 = cv2.erode(mask2, None, iterations=2)
+		mask2 = cv2.dilate(mask2, None, iterations=2)
 
 
+		cnts2 = cv2.findContours(mask2.copy(), cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)[-2]
+		center = None
 
-# 		cv2.circle(frame,(447,263), 63, (0,0,255), -1)
-# 		cv2.circle(frame,(447,400), 63, (0,255,0), -1)
-# 		cv2.circle(frame,(227,263), 63, (255,0,0), -1)
-# 		cv2.circle(frame,(227,400), 63, (255,0,255), -1)
-# 		if p:
-# 			print len(cnts2)
-# 			if len(cnts2) > 0:
-# 				c = max(cnts2, key=cv2.contourArea)
-# 				((x, y), radius) = cv2.minEnclosingCircle(c)
-# 				M = cv2.moments(c)
-# 				center = (int(M["m10"] / M["m00"]), int(M["m01"] / M["m00"]))
-# 				if radius > 10:
-# 					cv2.circle(frame, (int(x), int(y)), int(radius),
-# 						(0, 255, 255), 2)
-# 					cv2.circle(frame, center, 5, (0, 0, 255), -1)
-# 					radius = 10
 
-# 			pts2.appendleft(center)
 
-# 			for i in xrange(1, len(pts2)):
-# 				if pts2[i - 1] is None or pts2[i] is None:
-# 					continue
+		cv2.circle(frame,(447,263), 63, (0,0,255), -1)
+		cv2.circle(frame,(447,400), 63, (0,255,0), -1)
+		cv2.circle(frame,(227,263), 63, (255,0,0), -1)
+		cv2.circle(frame,(227,400), 63, (255,0,255), -1)
+		if p:
+			print len(cnts2)
+			if len(cnts2) > 0:
+				c = max(cnts2, key=cv2.contourArea)
+				((x, y), radius) = cv2.minEnclosingCircle(c)
+				M = cv2.moments(c)
+				center = (int(M["m10"] / M["m00"]), int(M["m01"] / M["m00"]))
+				if radius > 10:
+					cv2.circle(frame, (int(x), int(y)), int(radius),
+						(0, 255, 255), 2)
+					cv2.circle(frame, center, 5, (0, 0, 255), -1)
+					radius = 10
 
-# 				thickness = int(np.sqrt(10 / float(i + 1)) * 2.5)
-# 				cv2.line(frame, pts2[i - 1], pts2[i], (0, 0, 255), thickness)
-# 		if(center==None):
-# 			center = (0,0)
-# 			radius = 0
-# 		if p:
-# 			if (380<=center[0] + radius<=510) and (200<=center[1] + radius<=326) and loopcheck1==0:
-# 			if f == 0:
-# 				print "Check"	
-# 				sd.play(do1,	 fs1)
-# 				sad = 1
-# 				f = 1
-# 			elif (380<=center[0] + radius<=510) and (337<=center[1] + radius<=463) and loopcheck1==0:
-# 				if f == 0:
-# 					print "Check2"
-# 					sd.play(do2, fs2)
-# 					sad = 2
-# 				f = 1 
-# 			elif (180<=center[0] + radius<=306) and (200<=center[1] + radius<=326) and loopcheck1==0:
-# 				if f == 0:
-# 					print "Check3"
-# 					sd.play(do3, fs3)
-# 					sad = 3
-# 				f = 1
-# 			elif (180<=center[0] + radius<=306) and (337<=center[1] + radius<=463) and loopcheck1==0:
-# 				if f == 0:
-# 					print "Check4"
-# 					sd.play(do4, fs4)
-# 					sad = 4
-# 				f = 1
-# 			else:
-# 				f = 0
+			pts2.appendleft(center)
+
+			for i in xrange(1, len(pts2)):
+				if pts2[i - 1] is None or pts2[i] is None:
+					continue
+
+				thickness = int(np.sqrt(10 / float(i + 1)) * 2.5)
+				cv2.line(frame, pts2[i - 1], pts2[i], (0, 0, 255), thickness)
+		if(center==None):
+			center = (0,0)
+			radius = 0
+		if p:
+			if (380<=center[0] + radius<=510) and (200<=center[1] + radius<=326) and loopcheck1==0:
+				if f == 0:
+					print "Check"	
+					sd.play(do1,fs1)
+					sad = 1
+					f = 1
+			elif (380<=center[0] + radius<=510) and (337<=center[1] + radius<=463) and loopcheck1==0:
+				if f == 0:
+					print "Check2"
+					sd.play(do2, fs2)
+					sad = 2
+					f = 1 
+			elif (180<=center[0] + radius<=306) and (200<=center[1] + radius<=326) and loopcheck1==0:
+				if f == 0:
+					print "Check3"
+					sd.play(do3, fs3)
+					sad = 3
+					f = 1
+			elif (180<=center[0] + radius<=306) and (337<=center[1] + radius<=463) and loopcheck1==0:
+				if f == 0:
+					print "Check4"
+					sd.play(do4, fs4)
+					sad = 4
+					f = 1
+			else:
+				f = 0
 
 		
-# 		cv2.imshow("Frame", frame)
+		cv2.imshow("Frame", frame)
 
 
 
@@ -346,11 +346,11 @@ def loop1():
 thr = threading.Thread(target=mainloop, args=(), kwargs={})
 thr2 = threading.Thread(target=backplay, args=(), kwargs={})
 thrc = threading.Thread(target=loop1, args=(), kwargs={})
-# thrc2 = threading.Thread(target=loop2, args=(), kwargs={})
+thrc2 = threading.Thread(target=loop2, args=(), kwargs={})
 
 thr2.daemon = True
 thrc.daemon = True
-# thrc2.daemon = True
+thrc2.daemon = True
 
 
 mainloop()
