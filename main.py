@@ -5,12 +5,13 @@ import imutils
 import threading
 import time 
 import sys
-
+import cv2
 
 def nothing(x):
     pass
 ar1 = []
 ar2 = []
+fourcc = cv2.cv.CV_FOURCC(*'XVID')
 time1 = []
 time2 = []
 timer = []
@@ -19,7 +20,7 @@ rec_time = time.time()
 p = 1
 kc=1
 lock = threading.Lock()
-
+out = cv2.VideoWriter('output.avi',-1, 20.0, (1280,720))
 
 def merge_beat():
 	global ar1
@@ -37,12 +38,12 @@ def merge_beat():
 		greater_time = time1[j]>time2[i]
 		if greater_time:
 			x = time2[i]
-			i++
 			ar.append(ar2[i])
+			i = i + 1
 		else:
 			x = time1[j]
-			j++
 			ar.append(ar1[j])
+			j = j + 1
 		timer.append(x)
 	while(i<n):
 		timer.append(time2[i])
@@ -73,7 +74,6 @@ def mainloop():
 		global ar2
 		global ar
 		global timer
-		print kc
 		import cv2
 		# cv2.namedWindow('Threshold1')
 		# mask = None
@@ -147,7 +147,7 @@ def mainloop():
 					print "Disabled"
 
 			if key == ord("q"):
-				
+				out.release()
 				break
 
 			if key == ord("r"):
@@ -161,10 +161,10 @@ def mainloop():
 					print "Start time: " + str(rec_time)
 				if not kc:
 					print "Recorded"
-					print ar1
-					print ar2
-					print time1
-					print time2
+					# print ar1
+					# print ar2
+					# print time1
+					# print time2
 					merge_beat()
 				kc = not kc
 
@@ -186,6 +186,7 @@ def mainloop():
 
 
 		cv2.destroyAllWindows()
+		
 
 
 def delaybeat():
@@ -222,6 +223,7 @@ def loop1(lock):
 	import sounddevice as sd
 	import pyglet
 	global kc
+	global out
 
 	s1 = pyglet.media.load('sounds/brush.wav', streaming = False)
 	s2 = pyglet.media.load('sounds/hh.wav', streaming = False)
@@ -250,7 +252,10 @@ def loop1(lock):
 		sad = 0
 		(grabbed, frame) = camera.read()
 		frame = cv2.flip(frame,1)
-
+		lock.acquire()
+		out.write(frame)
+		lock.release()
+		# print frame.shape[:2]
 		frame = imutils.resize(frame, width=1200)
 		hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
 
@@ -330,7 +335,7 @@ def loop2(lock):
 
 	global kc
 	global ar2	
-
+	global out
 	# global time1
 	global time2
 	global rec_time
@@ -353,7 +358,9 @@ def loop2(lock):
 		sad = 0
 		(grabbed, frame) = camera.read()
 		frame = cv2.flip(frame,1)
-
+		lock.acquire()
+		out.write(frame)
+		lock.release()
 		frame = imutils.resize(frame, width=1200)
 		hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
 
