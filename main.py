@@ -6,20 +6,71 @@ import threading
 import time 
 import sys
 
+
 def nothing(x):
     pass
+ar1 = []
+ar2 = []
+time1 = []
+time2 = []
+timer = []
 ar = []
-
-myrecording = []
+rec_time = time.time()
 p = 1
+kc=1
 lock = threading.Lock()
 
+
+def merge_beat():
+	global ar1
+	global ar2
+	global time1
+	global time2
+	global timer
+	global ar
+
+	n = len(time2)
+	m = len(time1)
+	ans = n + m
+	i,j = 0,0
+	while(i<n and j<m):
+		greater_time = time1[j]>time2[i]
+		x = time2[i] if greater_time else time1[j]
+		timer.append(x)
+		ar.append(ar2[i] if greater_time else ar1[j])
+		i =i+1
+		j =j+1
+
+	while(i<n):
+		timer.append(time2[i])
+		ar.append(ar2[i])
+		i= i +1
+	while(j<m):
+		timer.append(time1[i])
+		ar.append(ar1[i])
+		j= j +1
+
+
+
 def mainloop():
-		
+		import pyglet
+
+		s1 = pyglet.media.load('sounds/brush.wav', streaming = False)
+		s2 = pyglet.media.load('sounds/hh.wav', streaming = False)
+		s3 = pyglet.media.load('sounds/drum.wav', streaming = False)
+		s4 = pyglet.media.load('sounds/snare.wav', streaming = False)
+
+
 		mod1 = 7
 		mod2 = 8
-		kc = 1
-
+		global kc
+		global ar1
+		global time1
+		global time2
+		global ar2
+		global ar
+		global timer
+		print kc
 		import cv2
 		# cv2.namedWindow('Threshold1')
 		# mask = None
@@ -83,9 +134,7 @@ def mainloop():
 
 		
 		while True:
-			if not kc:
-				if sad !=0:
-					ar.append(sad)
+
 			key = cv2.waitKey(1) & 0xFF
 			if key == ord("p"):
 				p = not p
@@ -100,12 +149,38 @@ def mainloop():
 
 			if key == ord("r"):
 				if kc:
+					ar1 =[]
+					ar2=[]
+					# time1=[]
+					# time2=[]
 					print "Recording ON"
+					rec_time = time.time()
+					print "Start time: " + str(rec_time)
 				if not kc:
 					print "Recorded"
-					print ar
-					thr2.start()
+					print ar1
+					print ar2
+					print time1
+					print time2
+					merge_beat()
 				kc = not kc
+
+			if key == ord("1"):
+				print "Playing"
+				i = 0
+				for x in ar :
+					if(x==1):
+						s1.play()
+					if(x==2):
+						s2.play()
+					if(x==3):
+						s3.play()
+					if(x==4):
+						s4.play()
+					if(i+1!=len(ar)):
+						time.sleep(timer[i+1] - timer[i])
+					i = i+1
+
 
 		cv2.destroyAllWindows()
 
@@ -143,6 +218,8 @@ def loop1(lock):
 	import soundfile as sf
 	import sounddevice as sd
 	import pyglet
+	global kc
+
 	s1 = pyglet.media.load('sounds/brush.wav', streaming = False)
 	s2 = pyglet.media.load('sounds/hh.wav', streaming = False)
 	s3 = pyglet.media.load('sounds/drum.wav', streaming = False)
@@ -157,10 +234,15 @@ def loop1(lock):
 	# fs = 65535
 	# duration = 10.5  # seconds
 	camera = cv2.VideoCapture(0)
-	h, s, v = 89, 75, 115
+	h, s, v = 26,47,125
 	gLower = (h,s,v)
-	gUpper = (255, 255, 255)
+	gUpper = (36, 255, 255)
 	f = 0
+	global ar1
+	global time1
+	# global time2
+	global rec_time
+
 	while(True):
 		sad = 0
 		(grabbed, frame) = camera.read()
@@ -218,6 +300,15 @@ def loop1(lock):
 						f = 1
 				else:
 					f = 0
+
+
+				if not kc:
+					# print "Here!"
+					event_time = time.time()
+					if sad !=0:
+						ar1.append(sad)	
+						time1.append(event_time - rec_time)
+
 		lock.acquire()
 		cv2.imshow("Frame", frame)
 		lock.release()
@@ -234,7 +325,12 @@ def loop2(lock):
 	s3 = pyglet.media.load('sounds/drum.wav', streaming = False)
 	s4 = pyglet.media.load('sounds/snare.wav', streaming = False)
 
+	global kc
+	global ar2	
 
+	# global time1
+	global time2
+	global rec_time
 
 
 	# do1, fs1 = sf.read('sounds/brush.wav')
@@ -249,6 +345,8 @@ def loop2(lock):
 	gUpper = (255, 255, 255)
 	f = 0
 	while(True):
+
+		# print kc
 		sad = 0
 		(grabbed, frame) = camera.read()
 		frame = cv2.flip(frame,1)
@@ -296,6 +394,7 @@ def loop2(lock):
 						s3.play()
 						# sd.play(do3, fs3)
 						sad = 3
+
 						f = 1
 				elif (center[0] >= 700 and center[0] <= 850 and center[1] >= 470 and center[1] <= 580 and radius <= 300):
 					if f == 0:
@@ -305,6 +404,13 @@ def loop2(lock):
 						f = 1
 				else:
 					f = 0
+
+				if not kc:
+					# print "Here! x 2"
+					event_time = time.time()
+					if sad !=0:
+						ar2.append(sad)	
+						time2.append(event_time - rec_time)
 		lock.acquire()
 		cv2.imshow("Frame", frame)
 		lock.release()
