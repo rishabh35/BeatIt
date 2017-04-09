@@ -158,7 +158,7 @@ def mainloop():
 					# time2=[]
 					print "Recording ON"
 					rec_time = time.time()
-					print "Start time: " + str(rec_time)
+					# print "Start time: " + str(rec_time)
 				if not kc:
 					print "Recorded"
 					# print ar1
@@ -183,6 +183,11 @@ def mainloop():
 					if(i+1!=len(ar)):
 						time.sleep(timer[i+1] - timer[i])
 					i = i+1
+					key = cv2.waitKey(1) & 0xFF
+					if key == ord("q"):
+						break
+				if key == ord("q"):
+					break
 
 
 		cv2.destroyAllWindows()
@@ -198,23 +203,23 @@ def delaybeat():
 def backplay():
 
 
-	print "I'm in thread : "
-	#print len(myrecording)
-	#sd.play(myrecording, fs)
+		print "I'm in thread : "
+		#print len(myrecording)
+		#sd.play(myrecording, fs)
 
-	while True:
-		i = 0
-		for i in ar:
-			time.sleep(0.25)
-			print i
-			if(i==1):
-				sd.play(do1, fs1)
-			elif(i==2):
-				sd.play(do2, fs2)
-			elif(i==3):
-				sd.play(do3, fs3)
-			elif(i==4):
-				sd.play(do4, fs4)
+		while True:
+			i = 0
+			for i in ar:
+				time.sleep(0.25)
+				print i
+				if(i==1):
+					sd.play(do1, fs1)
+				elif(i==2):
+					sd.play(do2, fs2)
+				elif(i==3):
+					sd.play(do3, fs3)
+				elif(i==4):
+					sd.play(do4, fs4)
 
 def loop1(lock):
 	print "yaya"
