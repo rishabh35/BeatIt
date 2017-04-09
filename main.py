@@ -35,12 +35,15 @@ def merge_beat():
 	i,j = 0,0
 	while(i<n and j<m):
 		greater_time = time1[j]>time2[i]
-		x = time2[i] if greater_time else time1[j]
+		if greater_time:
+			x = time2[i]
+			i++
+			ar.append(ar2[i])
+		else:
+			x = time1[j]
+			j++
+			ar.append(ar1[j])
 		timer.append(x)
-		ar.append(ar2[i] if greater_time else ar1[j])
-		i =i+1
-		j =j+1
-
 	while(i<n):
 		timer.append(time2[i])
 		ar.append(ar2[i])
