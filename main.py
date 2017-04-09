@@ -46,8 +46,8 @@ def merge_beat():
 		ar.append(ar2[i])
 		i= i +1
 	while(j<m):
-		timer.append(time1[i])
-		ar.append(ar1[i])
+		timer.append(time1[j])
+		ar.append(ar1[j])
 		j= j +1
 
 
