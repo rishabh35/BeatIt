@@ -157,9 +157,9 @@ def loop1(lock):
 	# fs = 65535
 	# duration = 10.5  # seconds
 	camera = cv2.VideoCapture(0)
-	h, s, v = 119, 97, 14
-	gLower = (h-10,s,v)
-	gUpper = (h+10, 255, 255)
+	h, s, v = 89, 75, 115
+	gLower = (h,s,v)
+	gUpper = (255, 255, 255)
 	f = 0
 	while(True):
 		sad = 0
@@ -244,9 +244,9 @@ def loop2(lock):
 	# fs = 65535
 	# duration = 10.5  # seconds
 	camera = cv2.VideoCapture(0)
-	h, s, v = 11, 116, 151
-	gLower = (h-10,s,v)
-	gUpper = (h+10, 255, 255)
+	h, s, v = 23,79,190
+	gLower = (h,s,v)
+	gUpper = (255, 255, 255)
 	f = 0
 	while(True):
 		sad = 0
